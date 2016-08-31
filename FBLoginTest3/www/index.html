@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--
+        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <title>Playground</title>
+
+    <script src="scripts/jquery-1.10.2.js"></script>
+    <script src="scripts/ImageSliderPager.js"></script>
+    <script src="scripts/jquery.form.js"></script>
+    <script src="scripts/addPlace.js"></script>
+
+    <link href="css/ImageSliderPager.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .licatorButton {
+            position: absolute;
+            background: url('images/Maps-Define-Location-icon.png');
+            background-size: contain;
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            opacity: 0.5;
+        }
+
+        .settingsButton {
+            position: absolute;
+            background: url('images/16-Menu-circular-button.png');
+            background-size: contain;
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            opacity: 0.5;
+            right: 0;
+            top: 0;
+        }
+
+        .popupWindow {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: lightpink;
+        }
+
+        .messageDlg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: lightskyblue;
+        }
+
+            .messageDlg .contentDlg {
+                position: absolute;
+                top: calc(50% - 50px);
+                left:10%;
+                width: 80%;
+                height: 100px;
+                vertical-align: middle;
+                background-color: lightcoral;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 100px;
+                border-radius: 10px;
+                box-shadow: 10px 10px 5px #888888;
+            }
+
+        .buttonClosePopup {
+            position: absolute;
+            background: url('images/button_delete_2-128.png');
+            background-size: contain;
+            width: 50px;
+            height: 50px;
+            right: 0;
+        }
+
+        @media screen and (orientation: portrait) {
+            #map {
+                width: 100%;
+                height: 50%;
+            }
+
+            #info {
+                position: relative;
+                width: 100%;
+                height: 50%;
+                background-color: lightgreen;
+                overflow: auto;
+            }
+
+            .licatorButton {
+                bottom: 50%;
+            }
+        }
+
+        @media screen and (orientation: landscape) {
+            #map {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                top: 0;
+            }
+
+            #info {
+                position: absolute;
+                left: 50%;
+                width: 50%;
+                height: 100%;
+                top: 0;
+                background-color: lightgreen;
+                overflow: auto;
+            }
+
+            .licatorButton {
+                bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="info">
+    </div>
+
+    <button class="licatorButton" onclick="locateMe()" );"></button>
+    <button class="settingsButton" onclick="openPopupWindow('Settings')" );"></button>
+
+    <div class="popupWindow" hidden>
+        <div class="buttonClosePopup" onclick="closeMe('popupWindow')"></div>
+        <div class="popupContent"></div>
+    </div>
+
+    <div class="messageDlg" hidden>
+        <div class="contentDlg">
+            Please wait...
+        </div>
+    </div>
+
+    <!--<div class="app">-->
+    <!--<h1>Apache Cordova</h1>
+    <div id="deviceready" class="blink">
+        <p class="event listening">Connecting to Device</p>
+        <p class="event received">Device is Ready</p>
+    </div>-->
+    <!--</div>-->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+    <script type="text/javascript" src="scripts/index.js"></script>
+    <script>
+
+        function logonViaFacebook() {
+            var fbLoginSuccess = function (userData) {
+                navigator.notification.alert("UserInfo: " + JSON.stringify(userData));
+            }
+
+            try {
+                facebookConnectPlugin.login(["public_profile"],
+                fbLoginSuccess,
+                function (error) {
+                    navigator.notification.alert(error);
+                }
+            );
+            } catch (e) {
+                navigator.notification.alert("err=" + e.message);
+            }
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnPi1yIP1d9g2A7Ka86FsffdUZzrHD-i8&libraries=places&callback=initMap"
+            async defer></script>
+
+    <div class="slideShow" style="border:1px; border-style:solid;" onclick="closeSlideShow()" hidden></div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+﻿<h3>Please fill all fields</h3>
+
+<form id="send_data_form" method='post' action='https://test002-dimkak9.c9users.io/addPlace/upload' enctype="multipart/form-data">
+
+    <input type='text' name='latitude' value=''>
+    <!--style='display:none;-->
+    <input type='text' name='longitude' value=''>
+    <h2>Описание:</h2>
+    <textarea type='text' name="description" rows="4" cols="50" placeholder:"description"></textarea>
+
+    <table border="0">
+        <tr>
+            <td width="15%">
+                <img class="enableColor" src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-1.png" alt="Alternate Text" />
+            </td>
+            <td width="15%">
+                <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-2.png" alt="Alternate Text" />
+            </td>
+            <td width="15%">
+                <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-3.png" alt="Alternate Text" />
+            </td>
+            <td width="15%">
+                <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-4.png" alt="Alternate Text" />
+            </td>
+            <td width="15%">
+                <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-5.png" alt="Alternate Text" />
+            </td>
+            <td width="15%">
+                <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-6.png" alt="Alternate Text" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="checkbox" name="type0" value="type0">
+            </td>
+            <td>
+                <input type="checkbox" name="type1" value="type1" checked>
+            </td>
+            <td>
+                <input type="checkbox" name="type2" value="type2">
+            </td>
+            <td>
+                <input type="checkbox" name="type3" value="type3">
+            </td>
+            <td>
+                <input type="checkbox" name="type4" value="type4">
+            </td>
+            <td>
+                <input type="checkbox" name="type5" value="type5">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Кочели
+            </td>
+            <td>
+                Горка
+            </td>
+            <td>
+                Спиральная горка
+            </td>
+            <td>
+                Лодочки
+            </td>
+            <td>
+                Карусель
+            </td>
+            <td>
+                Крепость
+            </td>
+        </tr>
+    </table>
+
+    <input type='file' name='fileUpload' onchange='onFileSelectedForUpload(this)'>
+    <br />
+    <br />
+    <input type='submit' value="Submit">
+</form>
