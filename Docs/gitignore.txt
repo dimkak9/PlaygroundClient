@@ -1,0 +1,6 @@
+.gitignore
+
+add file with extension jssecure
+open cli
+go to file locaion
+run:	git rm --cached name_of_file
