@@ -1,0 +1,28 @@
+.ditailsPannel {
+    background: #c2dbf7;
+    padding:5px;
+    border-radius: 5px;
+}
+
+.ditailsPannel div {
+    padding: 0;
+    margin: 0;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+
+.enableColor {
+    border-radius: 20px;
+    background: #73AD21;
+}
+
+.disableColor {
+    border-radius: 20px;
+    background: #CCCCCC;
+}
+
+.ditailsPannel div img {
+    display:block;
+    padding: 7.5px;
+}

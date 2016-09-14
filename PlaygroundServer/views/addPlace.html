@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ title }}</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="javascripts/malsup.github.com/jquery.form.js"></script>
+    
+
+    <script>
+    	$(document).ready(function() { 
+    	    
+            var options = { 
+                beforeSubmit:  beforeSubmit,
+                success:       afterSubmit  
+            };
+            
+            jQuery('#send_data_form').submit(function() { 
+                jQuery(this).ajaxSubmit(options); 
+                return false; 
+            }); 
+    	});
+    	
+    	
+    	function beforeSubmit()
+        {
+            $("input[name*='fileUpload'").filter(function () { return this.value == '' }).remove();
+            parent.showWaitMessage();
+        }
+    	
+    	
+    	function afterSubmit(responseText, statusText, xhr, $form)
+        {
+            parent.hideWaitMessage();
+            parent.closePopupWindow();
+            parent.showBaloonMessage(responseText);
+        }
+    	
+    	
+    	function onFileSelectedForUpload(target) {
+            var currentTargetIx = target.name.substring(10);
+            var newIndex = currentTargetIx;
+            newIndex++;
+    
+            if (!$("input[name='fileUpload" + newIndex + "']").length) {
+                $("input[name='" + target.name + "']").after('<br><input type="file" name="fileUpload' + newIndex + '" onchange="onFileSelectedForUpload(this)">');
+            }
+        }
+    </script>
+    
+</head>
+<body>
+    <h3>Please fill all fields</h3>
+    
+    <form id="send_data_form" method='post' action='addPlace/upload' enctype="multipart/form-data">
+        <input type='text' name='latitude' value='{{latitude}}'>
+        <!--style='display:none;-->
+        <input type='text' name='longitude' value='{{longitude}}'>
+		<h2>Описание:</h2>
+        <textarea type='text' name="description" rows="4" cols="50" placeholder:"description"></textarea>
+        
+        
+        <table border="0">
+            <tr>
+                <td width="15%">
+                    <img class="enableColor" src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-1.png" alt="Alternate Text" />
+                </td>
+                <td width="15%">
+                    <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-2.png" alt="Alternate Text" />
+                </td>
+                <td width="15%">
+                    <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-3.png" alt="Alternate Text" />
+                </td>
+                <td width="15%">
+                    <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-4.png" alt="Alternate Text" />
+                </td>
+                <td width="15%">
+                    <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-5.png" alt="Alternate Text" />
+                </td>
+                <td width="15%">
+                    <img src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-6.png" alt="Alternate Text" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" name="type0" value="type0">
+                </td>
+                <td>
+                    <input type="checkbox" name="type1" value="type1" checked>
+                </td>
+                <td>
+                    <input type="checkbox" name="type2" value="type2">
+                </td>
+                <td>
+                    <input type="checkbox" name="type3" value="type3">
+                </td>
+                <td>
+                    <input type="checkbox" name="type4" value="type4">
+                </td>
+                <td>
+                    <input type="checkbox" name="type5" value="type5">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Кочели
+                </td>
+                <td>
+                    Горка
+                </td>
+                <td>
+                    Спиральная горка
+                </td>
+                <td>
+                    Лодочки
+                </td>
+                <td>
+                    Карусель
+                </td>
+                <td>
+                    Крепость
+                </td>
+            </tr>
+        </table>
+        
+        <input type='file' name='fileUpload' onchange='onFileSelectedForUpload(this)'>
+		<br />
+        <br />
+        <input type='submit' value="Submit">
+        
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            left:0;
+            top:0;
+            float: left;
+            height: 100%;
+            width: 50%;
+        }
+
+        #error {
+            border-style:solid;
+            border-width:thin;
+            border-color:red;
+            background-color:yellow;
+            height:20px;
+            display:none;
+        }
+        
+        #loginMain {
+            height:80px;
+            display:inline-block;
+        }
+        
+        #login {
+            height:25px;
+        }
+        
+        #loginfaces {
+            height:55px;
+        }
+
+        #success {
+            position: absolute;
+            /*float: left;*/
+            font-family: 'Roboto','sans-serif';
+            height: 100%;
+            top:0;
+            left:50%;
+            width: 50%;
+            /*display: block;*/
+            /*text-align:center;*/
+            overflow-y:scroll;
+        }
+        
+        #additionaalInfo { 
+            display: none;
+            position: absolute;
+            z-index: 99;
+            border-style: solid;
+            border-radius: 5px;
+            background-color: white;
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            margin: -250px 0 0 -250px;
+        }
+        
+        .successBackground {
+            background: url('https://test002-dimkak9.c9users.io/images/playGroundIcon.png') no-repeat center;
+        }
+
+        #dim {
+            display: none;
+            position: absolute;
+            z-index: 98;
+            background-color: black;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0.4;
+            filter: alpha(opacity=40); /* For IE8 and earlier */
+        }
+
+        #addNewPlace {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 99;
+            border-style: solid;
+            border-radius: 5px;
+            background-color: white;
+            width: 500px;
+            height: 500px;
+            margin: -250px 0 0 -250px;
+        }
+        
+        #pac-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 12px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 300px;
+        }
+    
+        #pac-input:focus {
+            border-color: #4d90fe;
+        }
+        
+        .pac-container {
+            font-family: Roboto;
+        }
+        
+        
+        #type-selector label {
+            font-family: Roboto;
+            font-size: 13px;
+            font-weight: 300;
+        }
+          
+        #target {
+            width: 345px;
+        }
+        
+        .controls {
+            margin-top: 10px;
+            border: 1px solid transparent;
+            border-radius: 2px 0 0 2px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            height: 32px;
+            outline: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+      
+        .button {
+            position: absolute;
+            cursor:pointer;
+            width: 30px;
+			height: 30px;
+			background-image: url('https://test002-dimkak9.c9users.io/images/closeBtn.png');
+			background-repeat: no-repeat;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+			display: none;
+			z-index: 101;
+        }
+        
+        .buttonLike {
+			background: url(https://s3.amazonaws.com/dimkak9-playground/Icons/LoveThisPlace.jpg) no-repeat;
+			cursor:pointer;
+            border: none;
+			width:42px;
+			height:37px;
+        }
+        
+        .buttonDislike {
+			background: url(https://s3.amazonaws.com/dimkak9-playground/Icons/UnLoveThisPlace.jpg) no-repeat;
+			cursor:pointer;
+            border: none;
+			width:42px;
+			height:37px;
+        }
+    </style>
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="javascripts/ImageSliderPager.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/ImageSliderPager.css">
+    <link rel="stylesheet" href="stylesheets/ditailsPannel.css">
+    <link rel="stylesheet" href="stylesheets/starRating.css">
+    <script src="https://malsup.github.io/jquery.blockUI.js"></script>
+    
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>-->
+    
+    <script>
+    
+        var m_bUserConnected = false;
+        var m_userID;
+        var m_lastSelectedPlace;
+        m_bUserConnected = true;
+        
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            // The response object is returned with a status field that lets the
+            // app know the current login status of the person.
+            // Full docs on the response object can be found in the documentation
+            // for FB.getLoginStatus().
+            
+            m_bUserConnected = response.status === 'connected';
+            
+            if (!m_bUserConnected) {
+                clearMarkerNewPlace();
+            }
+            
+            if (m_lastSelectedPlace != undefined) {
+                loadme(m_lastSelectedPlace);
+            }
+            else {
+                document.getElementById('success').innerHTML = '<h1>Нажмите на любую иконку для получения дополнительно информации</h1>';
+                $('#success').addClass('successBackground');
+            }
+            
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                m_userID = response.authResponse.userID;
+                
+                testAPI();
+            } else if (response.status === 'not_authorized') {
+                // The person is logged into Facebook, but not your app.
+                //document.getElementById('login').innerHTML = 'Please log into this app.';
+                document.getElementById('loginfaces').innerHTML = '';
+            } else {
+                // The person is not logged into Facebook, so we're not sure if
+                // they are logged into this app or not.
+                //document.getElementById('login').innerHTML = 'Please log into Facebook.';
+                document.getElementById('loginfaces').innerHTML = '';
+            }
+        }
+        
+        function clearMarkerNewPlace() {
+            if (typeof (marker) != 'undefined') {
+                marker.setMap(null);
+            }
+        }
+        
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+        
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1712153995699505',
+                cookie: true,  // enable cookies to allow the server to access
+                // the session
+                xfbml: true,  // parse social plugins on this page
+                version: 'v2.5' // use graph api version 2.5
+            });
+
+            // Now that we've initialized the JavaScript SDK, we call
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
+
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+
+        };
+       
+        // Load the SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        
+        
+        function testAPI() {
+            console.log('Welcome!  Fetching your information.... ');
+
+            FB.api('/me?fields=name,email,gender,birthday', function (response) {
+                if (response.error != undefined) {
+                    document.getElementById('status').innerHTML += '<br/>' + response.error.message;
+                }
+                else {
+                    //document.getElementById('login').innerHTML += 'Thanks for logging in, ' + response.name + '!';
+                    //document.getElementById('status').innerHTML += '<br />'
+                    //document.getElementById('status').innerHTML += '<button type="button" onclick="showFriendsList()">Show Friends List</button>';
+                    //document.getElementById('login').innerHTML += '<br>';
+                    //document.getElementById('status').innerHTML += '<button type="button" onclick="showLikesList()">Show Likes List</button>';
+                    //document.getElementById('status').innerHTML += '<br>';
+                    //document.getElementById('login').innerHTML += 'Твои друзья которые используют эту апликацию';
+                    //document.getElementById('login').innerHTML += '<br>';
+                    showLikesList();
+                    /*
+                    window.location.href = "fblogintest2.html";
+                    //new ManageTodosView();
+                    self.undelegateEvents();
+                    delete self;
+                    */
+                }
+            });
+        }
+        
+        function showLikesList() {
+            FB.api('/me/friends?fields=installed,name,picture{url}', function (response) {
+
+                response.data.forEach(showUsersUsingThisApp);
+
+                /*
+                if (response.error != undefined) {
+                    document.getElementById('status').innerHTML += '<br/>' + response.error.message;
+                }
+                else {
+                    console.log('Successful login for: ' + response.name);
+
+                    printFriendsList(response);
+                }
+                */
+            });
+        }
+        
+        function showUsersUsingThisApp(element, index, array) {
+            document.getElementById('loginfaces').innerHTML += '<img style="margin-left:5px" src=' + element.picture.data.url + ' alt=' + element.picture.data.url + ' title=' + element.name + '>';
+        }
+    </script>
+
+    <script>
+        var kmlLayer;
+        var marker;
+        var markers = [];
+        var m_currentOpenedPopupWindow;
+        var m_showObjectsTmo = 0;
+        
+        
+        $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+            options.async = true;
+        });
+        
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 31.960136515157117, lng: 34.88011499999993 },
+                zoom: 17,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+            
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+            
+            map.addListener('idle', function () {
+                console.log("map loaded");
+                clearTimeout(m_showObjectsTmo);
+                m_showObjectsTmo = setTimeout(showObjects, 700);
+                
+                //showObjects();
+            });
+            
+            map.addListener('click', function (event) {
+                var latitude = event.latLng.lat();
+                var longitude = event.latLng.lng();
+                console.log("click on " + latitude + ', ' + longitude);
+                placeMarker(event.latLng);
+            });
+            
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function() {
+                var places = searchBox.getPlaces();
+                
+                if (places.length == 0) {
+                    return;
+                }
+                
+                // Clear out the old markers.
+                clearMarkerNewPlace()
+                markers = [];
+                
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    var icon = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25)
+                    };
+                    
+                    // Create a marker for each place.
+                    markers.push(new google.maps.Marker({
+                        map: map,
+                        icon: icon,
+                        title: place.name,
+                        position: place.geometry.location
+                    }));
+                
+                    if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                
+                map.fitBounds(bounds);
+                //map.setZoom(Math.min(map.getZoom(),17));
+                //map.setZoom(15);
+            });
+        }
+        
+        
+        function placeMarker(location) {
+
+            if (!m_bUserConnected) {
+                return;    
+            }
+            
+            clearMarkerNewPlace();
+
+            marker = new google.maps.Marker({
+                position: location,
+                icon: 'https://s3.amazonaws.com/dimkak9-playground/Icons/AddPlace.png',
+                map: map,
+                url: 'http://www.google.com/',
+                animation: google.maps.Animation.DROP,
+                draggable: true
+            });
+
+            google.maps.event.addListener(marker, 'click', showPopuWindow);
+        }
+        
+        function showObjects() {
+
+            console.log("showObjects()");
+
+            var mapCenter = map.getCenter();
+
+            if (kmlLayer != undefined) {
+                kmlLayer.setMap(null);
+            }
+
+            kmlLayer = new google.maps.KmlLayer({
+                url: 'https://test002-dimkak9.c9users.io/places' +
+                    '?lat=' + mapCenter.lat() +
+                    '&lng=' + mapCenter.lng() +
+                    '&zoom=' + map.getZoom() +
+                    '&mapWidth=' + window.innerWidth * 0.6 +
+                    '&mapHeight=' + window.innerHeight +
+                    '&showall=' + {{ showall }} + 
+                    '&f=' + new Date().getTime(),
+                //url: 'http://test002-dimkak9.c9users.io/dimka',
+                //url: 'http://developers.google.com/maps/tutorials/kml/westcampus.kml',
+                suppressInfoWindows: true,
+                preserveViewport: true
+            });
+
+            kmlLayer.setMap(map);
+
+            kmlLayer.addListener('click', function (kmlEvent) {
+                var content = kmlEvent.featureData.infoWindowHtml;
+                var value = content.substr(content.indexOf("id=") + 3, 24);
+                m_lastSelectedPlace = value;
+                
+                loadme(value);
+            });
+        }
+        
+        function showPopuWindow() {
+            $('#addNewPlace').attr('src', 'addPlace?lat=' + marker.position.lat() + '&lng=' + marker.position.lng());
+            $('#dim').show();
+            m_currentOpenedPopupWindow = $('#addNewPlace');
+            m_currentOpenedPopupWindow.show();
+            changeCloseButtonPosition();
+            $('.button').show();
+        }
+
+     
+        function closePopupWindow() {
+            $('#dim').hide();
+            m_currentOpenedPopupWindow.hide();
+            $('.button').hide();
+            clearMarkerNewPlace()
+            showObjects();
+        }
+        
+        function loadme(content) {
+            $("#error").hide();
+            $("#success").removeClass('successBackground');
+            
+            $("#success").load("placeinfonew?id=" + content + "&bUserConnected=1&yy=" + (m_bUserConnected ? "1" : "0") + "&debug=" + {{ debug }}, function (response, status, xhr) {
+                
+                initImageSliderPager();
+                
+                // init stars buttons
+                $(':radio').change(
+                  function(){
+                    $('.choice').text( this.value + ' stars' );
+                  } 
+                )
+                
+                $( window ).resize(function() {
+                    resizeDiv();
+                  
+                    changeCloseButtonPosition();
+                });
+                
+                if (status == "error") {
+                    var msg = "Sorry but there was an error: ";
+                    $("#error").html(msg + xhr.status + " " + xhr.statusText);
+                    $("#error").show("slow");
+                }
+            });
+        }
+        
+        
+        function showRatingStats(placeid) {
+            $("#additionaalInfo").load("ratingInfo?id=" + placeid, function (response, status, xhr) {
+                
+                $('#dim').show();
+                m_currentOpenedPopupWindow = $("#additionaalInfo");
+                m_currentOpenedPopupWindow.show();
+                changeCloseButtonPosition();
+                $('.button').show();
+                
+                if (status == "error") {
+                    var msg = "Sorry but there was an error: ";
+                    $("#error").html(msg + xhr.status + " " + xhr.statusText);
+                    $("#error").show("slow");
+                }
+            });
+        }
+        
+        
+        function showCommentsWindow(placeid) {
+            $("#additionaalInfo").load("comments?id=" + placeid, function (response, status, xhr) {
+                
+                $('#dim').show();
+                m_currentOpenedPopupWindow = $("#additionaalInfo");
+                m_currentOpenedPopupWindow.show();
+                changeCloseButtonPosition();
+                $('.button').show();
+                
+                if (status == "error") {
+                    var msg = "Sorry but there was an error: ";
+                    $("#error").html(msg + xhr.status + " " + xhr.statusText);
+                    $("#error").show("slow");
+                }
+            });
+        }
+        
+        
+        function showEditWindow(placeid) {
+            $('#addNewPlace').attr('src', 'editPlace?id=' + placeid);
+            $('#dim').show();
+            m_currentOpenedPopupWindow = $('#addNewPlace');
+            m_currentOpenedPopupWindow.show();
+            changeCloseButtonPosition();
+            $('.button').show();
+        }
+        
+        
+        function changeCloseButtonPosition() {
+            var position = m_currentOpenedPopupWindow.position();
+            $('.button').css({top: position.top - 250 - 30, left: position.left - 250 + $("#additionaalInfo").outerWidth() - 30});
+        }
+        
+        
+        // A $( document ).ready() block.
+        $( document ).ready(function() {
+            console.log( "ready!" );
+        });
+        
+        function onLikePlace() {
+			
+			$.post('https://test002-dimkak9.c9users.io/like?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+                var div = document.getElementById('likeUsersImagesList');
+
+                div.innerHTML = div.innerHTML + '<img src="http://graph.facebook.com/' + data + '/picture" />';
+            });
+		}
+		
+		function onDislikePlace() {
+		    $.post('https://test002-dimkak9.c9users.io/dislike?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+                var img = $("img");
+                img.each(function() {
+                    var src = $(this).attr('src');
+                    if (src.indexOf(data) != -1) {
+                        $(this).remove();
+                    }
+                });
+            });
+		}
+		
+		function showWaitMessage() {
+            //http://malsup.com/jquery/block/#demos
+            $.blockUI({ css: { 
+                    border: 'none', 
+                    padding: '15px', 
+                    backgroundColor: '#000', 
+                    '-webkit-border-radius': '10px', 
+                    '-moz-border-radius': '10px', 
+                    opacity: .5, 
+                    color: '#fff' 
+                } }); 
+                
+                //$.unblockUI();
+        }
+        
+        
+        function hideWaitMessage() {
+            $.unblockUI();
+        }
+        
+        
+        function showBaloonMessage(msg) {
+            //$.growlUI('Growl Notification', msg); 
+            
+            $.blockUI({ 
+                theme:     false, 
+                title:    'This is your title', 
+                message:  '<p>' + msg + '</p>', 
+                timeout:   3000 
+            }); 
+        }
+    </script>
+    
+    
+    <script>
+        //placeinfonew
+        function openSlideShow(imageUrl) {
+            //var imageUrl = "https://unsplash.it/800/600?image=" + ix
+            $('.slideShow').css("background-image", 'url(' + imageUrl + ')');
+            $('.slideShow').show();
+        }
+
+
+        function closeSlideShow() {
+            $('.slideShow').hide();
+        }
+    </script>
+    
+</head>
+<body>
+    
+    <div id="dim"></div>
+    <iframe id="addNewPlace"></iframe>
+    <div id="error"></div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id="map"></div>
+    <input type="button" name="button" onclick="closePopupWindow()" class="button"/>
+    <div id="additionaalInfo"></div>
+    <div id="success" class="successBackground"><h3>Нажмите на любую иконку для получения дополнительно информации</h3></div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnPi1yIP1d9g2A7Ka86FsffdUZzrHD-i8&libraries=places&callback=initMap"
+            async defer></script>
+            
+    <div class="slideShow" style="border:1px; border-style:solid;" onclick="closeSlideShow()" hidden></div>
+</body>
+</html>

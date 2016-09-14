@@ -1,0 +1,44 @@
+<div style="overflow-y: scroll; height:500px;">
+    <form id="addComment" method='post' action='comments/addComment'>
+        <h2>Please leave your comment:</h2>
+        <img id="addCommentSelfPicture" src="" />
+        <textarea type='text' name="comment" rows="5" cols="50" placeholder="your comment here"></textarea>
+        <br>
+        <input type='submit' value="Submit">
+	</form>
+	
+	<hr>
+    Previos comments
+    
+    <div id="comments">
+        {% for instance in comments %}
+        <div>
+            <img src="http://graph.facebook.com/{{instance.userid}}/picture" />
+            {{instance.date}} : {{instance.comment}}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#addCommentSelfPicture").attr("src", 'http://graph.facebook.com/' + m_userID + '/picture');
+    
+    $('#addComment').submit(function(ev) {
+                
+        ev.preventDefault(); // to stop the form from submitting
+        
+        if ($("[name=comment]" ).val() != "") {
+            var data = {
+                userID : m_userID, 
+                placeID:m_lastSelectedPlace, 
+                comment:$("[name=comment]" ).val()
+            };
+            // build a json object or do something with the form, store in data
+            $.post('comments/addComment', data, function(resp) {
+                $('#comments').prepend('<div><img src="http://graph.facebook.com/' + resp.userid + '/picture" />' + resp.date + ' : ' + resp.comment + '</div>')
+                $("[name=comment]" ).val("");
+            });
+        }
+    });
+    
+</script>

@@ -1,0 +1,71 @@
+<!--
+<div class="container">
+    <div class="slider_wrapper">
+        <ul id="image_slider">
+            {% for instance in imagesArr %}
+            <li>
+                <div class="divimg"><img src="{{mainImagesPath}}{{instance.url}}"></div>
+            </li>
+            {% endfor %}
+        </ul>
+        <span class="nvgt" id="prev"></span>
+        <span class="nvgt" id="next"></span>
+    </div>
+    <ul id="pager">
+    </ul>
+</div>
+-->
+
+{% for instance in imagesArr %}
+    <img id="infoCover" width="100%" src="{{mainImagesPath}}{{instance.url}}" alt="Alternate Text" />
+    <br>
+{% endfor %}
+
+
+<div class="placeDitailsContainer">
+    <div>
+        {% if debug == 1 %}
+            Place: {{ placeid }}
+        {% endif %}
+    </div>
+    
+    {% if bUserConnected == 1 %}
+        <div class="ratingStarWithPoints" onclick='showRatingStats("{{ placeid }}");'>{{ rating }}</div>
+        <input type="button" name="button" value="Коментарии" onclick='showCommentsWindow("{{ placeid }}");'/>
+        <input type="button" name="buttonEdit" value="Редактировать" onclick='showEditWindow("{{ placeid }}");'/>
+    {% endif %}
+    
+    
+    <div class="ditailsPannel">
+        
+        {% for instance in variation %}
+        <div>
+            {% if instance == 1 %}
+                <img class="enableColor" src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-{{loop.index}}.png" />
+            {% else %}
+                <img class="disableColor" src="https://s3.amazonaws.com/dimkak9-playground/Icons/fun-{{loop.index}}.png" />
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!--<img style="max-width:100%" src="{{imgsource}}" alt="Alternate Text" />-->
+    <br />
+    
+    {% if bUserConnected == 0 %}
+        <div>
+            Зорегистрируйся и узнай болше об этом месте
+        </div>
+    {% else %}
+        <input type="button" name="button"  onclick="onLikePlace()" class="buttonLike"/>
+        <input type="button" name="button"  onclick="onDislikePlace()" class="buttonDislike"/>
+        <br>
+        <div id="likeUsersImagesList">
+            {% for instance in likes %}
+            <img src="https://graph.facebook.com/{{instance}}/picture" />
+            {% endfor %}
+        </div>
+        <hr> 
+        {{description}}
+    {% endif %}
+</div>
