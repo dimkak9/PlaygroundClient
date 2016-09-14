@@ -5,7 +5,8 @@ var uuid = require('node-uuid');
 var nodemailer = require('nodemailer');
 var pgConstants = require("./pgConstants");
 var AWS = require('aws-sdk');
-var ObjectId = require('mongoose').Types.ObjectId; 
+var ObjectId = require('mongoose').Types.ObjectId;
+var credentialsAS3 = require("./credentialsAS3.jssecure");
 
 
 var router = express.Router();
@@ -14,13 +15,9 @@ router.use(busboy());
 var m_req;
 var m_data;
 
-var bucketName = 'dimkak9-playground';
-var AWSAccessKeyId = 'AKIAJZXFDL23SW5VRLCA';
-var AWSSecretKey = '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';
-
 AWS.config.update({
-    accessKeyId: AWSAccessKeyId,
-    secretAccessKey: AWSSecretKey
+    accessKeyId: credentialsAS3.accessKeyId,
+    secretAccessKey: credentialsAS3.secretAccessKey
 });
 
 var s3 = new AWS.S3();
@@ -87,7 +84,7 @@ router.post('/upload', function(req, res) {
           mimetype: mimetype
       };
       
-      var params = { Bucket: bucketName, Key: folderKey, Body: fileInst.buffer, ACL: 'public-read' };
+      var params = { Bucket: credentialsAS3.bucketName, Key: folderKey, Body: fileInst.buffer, ACL: 'public-read' };
 
       s3.putObject(params, function (err, data) {
 
