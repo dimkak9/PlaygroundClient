@@ -25,7 +25,6 @@ router.get('/', function (req, res, next) {
 });
 
 
-
 router.post('/upload', function (req, res) {
     
     var m_bStep1Finished = false;
@@ -53,7 +52,7 @@ router.post('/upload', function (req, res) {
             
             var finalBuffer = Buffer.concat(this.fileRead);
             
-            fff(finalBuffer, mimetype, unicFileName, 'Big', uploadMed);
+            fff(finalBuffer, mimetype, unicFileName, 'Big', uploadMed, req);
         });
     }).on('end', function () {
         console.log('END');
@@ -149,8 +148,7 @@ router.post('/upload', function (req, res) {
         return retCode;
     }
     
-    
-    
+        
     function sendToS3(buffer, filename, suffix, mimetype, cb) {
         console.log("call sendToS3");
         var folderKey = 'Places_' + suffix + '/' + filename;
@@ -203,7 +201,7 @@ router.post('/upload', function (req, res) {
             }
             else {
                 
-                sendEmail(place._id);
+                req.sendEmail(place._id);
                 
                 m_bStep2Finished = true;
                 sendResponceToClient();
@@ -211,29 +209,6 @@ router.post('/upload', function (req, res) {
         });
         
         return;
-    }
-    
-    
-    function sendEmail(id) {
-        var transporter = nodemailer.createTransport('smtps://dimkak9%40gmail.com:Mashka44@smtp.gmail.com');
-        
-        // setup e-mail data with unicode symbols 
-        var mailOptions = {
-            from: '"Dima Kraynikov" <dimkak9@gmail.com>',     // sender address 
-            to: 'dimkak9@gmail.com',                          // list of receivers   
-            subject: 'Playground: New place wass added',      // Subject line 
-            text: 'New place wass added (id = "' + id + '")', // plaintext body 
-            html: 'New place wass added (id = "' + id + '")'  // html body 
-        };
-        
-        //res.send('respond with a resource');
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                return console.log(error);
-            }
-            
-            console.log('Message sent: ' + info.response);
-        });
     }
 });
 

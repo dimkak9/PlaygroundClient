@@ -24,7 +24,7 @@
     "aws-sdk": "^2.5.5",
     "connect-busboy": "0.0.2",
     "ejs": "^2.5.1",
-    "fs": "0.0.1-security",
+    "fs": "0.0.2",
     "jimp": "^0.2.27",
     "mongoose": "^4.6.0",
     "node-uuid": "^1.4.7",

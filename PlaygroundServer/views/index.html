@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>{{ title }}</title>
@@ -71,7 +71,7 @@
         }
         
         .successBackground {
-            background: url('https://test002-dimkak9.c9users.io/images/playGroundIcon.png') no-repeat center;
+            background: url('images/playGroundIcon.png') no-repeat center;
         }
 
         #dim {
@@ -145,7 +145,7 @@
             cursor:pointer;
             width: 30px;
 			height: 30px;
-			background-image: url('https://test002-dimkak9.c9users.io/images/closeBtn.png');
+			background-image: url('images/closeBtn.png');
 			background-repeat: no-repeat;
 			-webkit-background-size: cover;
 			-moz-background-size: cover;
@@ -446,9 +446,10 @@
             if (kmlLayer != undefined) {
                 kmlLayer.setMap(null);
             }
-
+            
+            // not working with localhost
             kmlLayer = new google.maps.KmlLayer({
-                url: 'https://test002-dimkak9.c9users.io/places' +
+                url: 'http://dimkak9.ddns.net:3010/places' +
                     '?lat=' + mapCenter.lat() +
                     '&lng=' + mapCenter.lng() +
                     '&zoom=' + map.getZoom() +
@@ -456,8 +457,6 @@
                     '&mapHeight=' + window.innerHeight +
                     '&showall=' + {{ showall }} + 
                     '&f=' + new Date().getTime(),
-                //url: 'http://test002-dimkak9.c9users.io/dimka',
-                //url: 'http://developers.google.com/maps/tutorials/kml/westcampus.kml',
                 suppressInfoWindows: true,
                 preserveViewport: true
             });
@@ -580,7 +579,7 @@
         
         function onLikePlace() {
 			
-			$.post('https://test002-dimkak9.c9users.io/like?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+			$.post('like?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
                 var div = document.getElementById('likeUsersImagesList');
 
                 div.innerHTML = div.innerHTML + '<img src="http://graph.facebook.com/' + data + '/picture" />';
@@ -588,7 +587,7 @@
 		}
 		
 		function onDislikePlace() {
-		    $.post('https://test002-dimkak9.c9users.io/dislike?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+		    $.post('dislike?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
                 var img = $("img");
                 img.each(function() {
                     var src = $(this).attr('src');
@@ -657,7 +656,8 @@
     <div id="map"></div>
     <input type="button" name="button" onclick="closePopupWindow()" class="button"/>
     <div id="additionaalInfo"></div>
-    <div id="success" class="successBackground"><h3>Нажмите на любую иконку для получения дополнительно информации</h3></div>
+    <div id="success" class="successBackground"><h3>Нажмите на любую иконку для получения дополнительно информации</h3>
+    </div>
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnPi1yIP1d9g2A7Ka86FsffdUZzrHD-i8&libraries=places&callback=initMap"
             async defer></script>

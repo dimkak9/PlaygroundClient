@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>KmlFile</name>
+    <Style id="west_campus_style">
+      <IconStyle>
+        <Icon>
+          <href>http://playthelariver.com/wp-content/uploads/icon_playground.png</href>
+        </Icon>
+      </IconStyle>
+      <BalloonStyle>
+        <bgColor>ffff00</bgColor>
+        <textColor>fffffff</textColor>
+        <text>$[iframe]</text>
+        <displayMode>default</displayMode>
+      </BalloonStyle>
+    </Style>
+    <Placemark>
+      <name>Play ground 0</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57a65951422648aa4494ef82</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.87992882728577,31.961383430936095, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 1</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57a6595f422648aa4494ef83</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.87992882728577,31.961383430936095, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 2</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57acac81ee268eda76e2aa22</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.88056182861328,31.95968126658146, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 3</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57af645f1a3717ec0aaeefd6</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.88064765930176,31.960373059108775, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 4</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57a6509dadc003bf2b860a28</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.8822784423828,31.961738423804, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 5</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57a65385ce71924b3c9e1436</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.88155961036682,31.960809978019892, 0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Play ground 6</name>
+      <styleUrl>#west_campus_style</styleUrl>
+      <description></description>
+      <ExtendedData>
+        <Data name="iframe">
+          <value>id=57a65393ce71924b3c9e1437</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>34.88155961036682,31.960809978019892, 0</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

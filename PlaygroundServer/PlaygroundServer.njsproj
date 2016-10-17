@@ -20,8 +20,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <ProjectView>ShowAllFiles</ProjectView>
-    <NodejsPort>1337</NodejsPort>
-    <StartWebBrowser>true</StartWebBrowser>
+    <NodejsPort>3010</NodejsPort>
+    <StartWebBrowser>True</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,13 +48,15 @@
     <Compile Include="routes\placeinfo.js" />
     <Compile Include="routes\placeinfonew.js" />
     <Compile Include="routes\ratingInfo.js" />
-    <Compile Include="routes\SendEmail.js" />
     <Compile Include="routes\test.js" />
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
     <Content Include="package.json" />
     <Content Include="public\images\closeBtn.png" />
+    <Content Include="public\images\comments.png" />
+    <Content Include="public\images\edit.png" />
     <Content Include="public\images\playGroundIcon.png" />
+    <Content Include="public\images\rating-xxl.png" />
     <Content Include="public\stylesheets\demo.css" />
     <Content Include="public\stylesheets\ditailsPannel.css" />
     <Content Include="public\stylesheets\ImageSliderPager.css" />
@@ -67,7 +69,7 @@
     <Content Include="public\stylesheets\themes\themes.gif" />
     <Content Include="public\stylesheets\themes\themes.html" />
     <Content Include="README.md" />
-    <Content Include="routes\credentialsAS3.jssecure" />
+    <Compile Include="routes\credentialsAS3.jssecure" />
     <Content Include="views\addPlace.html" />
     <Content Include="views\comments.html" />
     <Content Include="views\editPlace.html" />
@@ -79,7 +81,6 @@
     <Content Include="views\placeinfo.html" />
     <Content Include="views\placeinfonew.html" />
     <Content Include="views\ratingInfo.html" />
-    <Content Include="views\SendEmail.html" />
     <Content Include="views\test.html" />
   </ItemGroup>
   <ItemGroup>

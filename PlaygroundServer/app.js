@@ -4,9 +4,31 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var nodemailer = require('nodemailer');
+
+var credentialsAS3 = require("./routes/credentialsAS3.jssecure");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var placeinfonew = require('./routes/placeinfonew');
+var addPlace = require('./routes/addPlace');
+
+var PlacesSchema = new mongoose.Schema({
+    latitude: Number,
+    longitude: Number,
+    imgsource: String,
+    description: String,
+    rating: Number,
+    images: Array,
+    likes: Array, 
+    variation: Array, 
+    comments: Array, 
+    placeStatus: String,
+    creationDate: Date,
+    lastModifiedDate: Date,
+    mainImagesPath: String
+});
 
 var app = express();
 
@@ -27,8 +49,60 @@ app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+mongoose.connect(credentialsAS3.mongoDBconnectionString, function (error, res) {
+    if (error) {
+        console.log('ERROR connecting. ' + error);
+    } else {
+        console.log('Succeeded connected');
+    }
+});
+
+// Make our db accessible to our router
+app.use(function (req, res, next) {
+    req.placesDB = mongoose.model('places', PlacesSchema);
+    next();
+});
+
+app.use(function (req, res, next) {
+    req.sendEmail = sendEmail;
+    next();
+});
+
+
+var transporter = nodemailer.createTransport(credentialsAS3.emailConnectionString);
+
+// setup e-mail data with unicode symbols 
+var mailOptions = {
+    from: '"Dima Kraynikov" <dimkak9@gmail.com>',
+    to: 'dimkak9@gmail.com',
+    subject: '',
+    text: '', 
+    html: ''
+};
+
+function sendEmail(id) {
+    
+    console.log('Semding Email');
+    
+    mailOptions.subject = 'Playground: New place wass added';
+    mailOptions.text = 'New place wass added (id = "' + id + '")';
+    mailOptions.html = 'New place wass added (id = "' + id + '")';
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        }
+        else {
+            console.log('Message sent: ' + info.response);
+        }
+    });
+}
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/placeinfonew', placeinfonew);
+app.use('/addPlace', addPlace);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

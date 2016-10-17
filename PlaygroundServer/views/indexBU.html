@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>{{ title }}</title>
@@ -68,7 +68,7 @@
         }
         
         .successBackground {
-            background: url('https://test002-dimkak9.c9users.io/images/playGroundIcon.png') no-repeat center;
+            background: url('images/playGroundIcon.png') no-repeat center;
         }
 
         #dim {
@@ -142,7 +142,7 @@
             cursor:pointer;
             width: 30px;
 			height: 30px;
-			background-image: url('https://test002-dimkak9.c9users.io/images/closeBtn.png');
+			background-image: url('images/closeBtn.png');
 			background-repeat: no-repeat;
 			-webkit-background-size: cover;
 			-moz-background-size: cover;
@@ -440,7 +440,7 @@
             }
 
             kmlLayer = new google.maps.KmlLayer({
-                url: 'https://test002-dimkak9.c9users.io/places' +
+                url: 'places' +
                     '?lat=' + mapCenter.lat() +
                     '&lng=' + mapCenter.lng() +
                     '&zoom=' + map.getZoom() +
@@ -571,7 +571,7 @@
         
         function onLikePlace() {
 			
-			$.post('https://test002-dimkak9.c9users.io/like?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+			$.post('like?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
                 var div = document.getElementById('likeUsersImagesList');
 
                 div.innerHTML = div.innerHTML + '<img src="http://graph.facebook.com/' + data + '/picture" />';
@@ -579,7 +579,7 @@
 		}
 		
 		function onDislikePlace() {
-		    $.post('https://test002-dimkak9.c9users.io/dislike?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
+		    $.post('dislike?userID=' + m_userID + '&placeID=' + m_lastSelectedPlace, null, function(data, status){
                 var img = $("img");
                 img.each(function() {
                     var src = $(this).attr('src');
